@@ -84,38 +84,34 @@ bool DronesManager::insert(DroneRecord value, unsigned int index) {
         inserted = false;
     } else if(size == 0 && index ==0) {
         inserted = insert_front(value);
-    }else if (size == 1 and index == 0) {
-        insert_front(*new_record);
-        inserted = true;
-    } else if(!empty() && index == (size - 1)) {
-        inserted = insert_back(*new_record);
-    } else{
+    }else if (size == index){
+        inserted = insert_back(value);
+    }else{
 
         int position = 0;
-        //Iterating though linked list
-        //Setting the position to index
+
         while(position != index && current_record->next){
             position++;
             current_record = current_record->next;
         }
 
-        if(current_record->prev) {
-            current_record->prev->next = new_record;
-        } else {
+        DroneRecord* prev_record = current_record->prev;
+
+        new_record->prev = prev_record;
+        new_record->next = current_record;
+        current_record->prev = new_record;
+
+
+        if(prev_record){
+            prev_record->next = new_record;
+        }else{
             first = new_record;
         }
-
-        if (!current_record->next) {
-            last = new_record;
-        }
-
-        new_record->next = current_record;
-        new_record->prev = current_record->prev;
-        current_record->prev = new_record;
 
         size ++;
         inserted = true;
     }
+
 
     return inserted;
 }
