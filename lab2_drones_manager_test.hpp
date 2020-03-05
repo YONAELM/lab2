@@ -373,7 +373,7 @@ public:
         ASSERT_TRUE(manager.empty() && manager.get_size() == 0)
 
         int expected_value = 1234;
-        ASSERT_TRUE(manager.insert(DronesManager::DroneRecord(expected_value), 0))
+        ASSERT_TRUE(manager.insert(DronesManager::DroneRecord(expected_value), 0)) //breaking here
         ASSERT_TRUE(*manager.first == DronesManager::DroneRecord(expected_value) &&
                     *manager.last == DronesManager::DroneRecord(expected_value))
 
@@ -419,7 +419,7 @@ public:
         ASSERT_FALSE(manager.insert_sorted_asc(DronesManager::DroneRecord(35)))
         ASSERT_TRUE(manager.insert(DronesManager::DroneRecord(72),2))
         ASSERT_FALSE(manager.is_sorted_asc())
-        manager.sort_asc();
+        manager.sort_asc(); //breaks here
         ASSERT_TRUE(manager.is_sorted_asc())
 
         DronesManagerSorted manager2;

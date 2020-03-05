@@ -80,9 +80,9 @@ bool DronesManager::insert(DroneRecord value, unsigned int index) {
     DroneRecord* current_record = first;
     bool inserted = false;
 
-    if(!first || index > size){
+    if((!first && index != 0) || index > size){
         inserted = false;
-    } else if(size == 0 && index ==0) {
+    } else if(size == 0 && index == 0) {
         inserted = insert_front(value);
     }else if (size == index){
         inserted = insert_back(value);
@@ -163,11 +163,11 @@ bool DronesManager::remove(unsigned int index) {
     DroneRecord* current_record = first;
     bool removed = false;
     if (!first || index >= size){
-        removed = false;
+        return false;
 
     }else if(size  == 1 && index == 0){//Delete the only element of the list
         first = NULL;
-        removed = true;
+        //removed = true;
     }else{
 
         int count = 0;
@@ -187,13 +187,13 @@ bool DronesManager::remove(unsigned int index) {
         } else {
             first = current_record->next;
         }
-        removed = true;
+        //removed = true;
     }
     --size;
     delete current_record;
     current_record = NULL;
 
-    return removed;
+    return true;
 }
 bool DronesManager::remove_front() {
 
