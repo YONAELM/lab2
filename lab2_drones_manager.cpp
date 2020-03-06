@@ -8,10 +8,7 @@ DronesManager::DronesManager() {
 	size = 0;
 }
 DronesManager::~DronesManager() {
-//    DroneRecord* last_record = last;
-//    for (int i = size; i > 0; --i) {
-//        last_record;
-//    }
+
 }
 bool operator==(const DronesManager::DroneRecord& lhs, const DronesManager::DroneRecord& rhs) {
 	bool are_equal = true;
@@ -306,7 +303,7 @@ bool DronesManager::reverse_list() {
 bool DronesManagerSorted::is_sorted_asc() const {
     bool is_sorted_asc = true;
     if(!first){
-        is_sorted_asc = false;
+        is_sorted_asc = true;
     } else if (!first->next){
         is_sorted_asc = true;
     }else{
@@ -321,7 +318,7 @@ bool DronesManagerSorted::is_sorted_asc() const {
 bool DronesManagerSorted::is_sorted_desc() const {
     bool is_sorted_desc = true;
     if(!first){
-        is_sorted_desc = false;
+        is_sorted_desc = true;
     } else if (!first->next){
         is_sorted_desc = true;
     }else{
@@ -348,7 +345,15 @@ bool DronesManagerSorted::insert_sorted_asc(DroneRecord val) {
         } else{
             DroneRecord* current_record = first;
             int count = 0;
-            while(current_record->next && !sorted_insert) {
+            while(current_record && !sorted_insert) {
+                if(!current_record->next) {
+                    insert_back(val);
+                    sorted_insert = true;
+                }
+                if(val.droneID < current_record->droneID) {
+                    insert_front(val);
+                    sorted_insert = true;
+                }
                 if (current_record->droneID < val.droneID && val.droneID < current_record->next->droneID) {
                     insert(val, count + 1);
                     sorted_insert = true;
@@ -374,7 +379,16 @@ bool DronesManagerSorted::insert_sorted_desc(DroneRecord val) {
         } else{
             DroneRecord* current_record = first;
             int count = 0;
-            while(current_record->next && !sorted_insert) {
+            while(current_record && !sorted_insert) {
+                if (!current_record->next) {
+                    insert_back(val);
+                    sorted_insert = true;
+                }
+                if (val.droneID > current_record->droneID) {
+                    insert_front(val);
+                    sorted_insert = true;
+                }
+
                 if (current_record->droneID > val.droneID && val.droneID > current_record->next->droneID) {
                     insert(val, count + 1);
                     sorted_insert = true;
@@ -393,7 +407,9 @@ void DronesManagerSorted::sort_asc() {
     }
     DroneRecord* current_record = first;
     int count = 0;
-    while(count != size){
+    while(count != size-1){
+        //DroneRecord* prev_record = current_record->prev;
+        //DroneRecord* next_record = current_record->next;
         if(current_record->droneID > current_record->next->droneID && current_record->next){
 //                insert_front(current_record->next);
 //                remove(count);
@@ -418,11 +434,13 @@ void DronesManagerSorted::sort_asc() {
                 // Only last:         [1] - [3] - [2]  -->  [1] - [2] - [3]
             else if (current_record != first && !current_record->next->next){
                 //current_record is [3]
+                DroneRecord* one_record = current_record->prev;
                 DroneRecord* two_record = current_record->next;
                 two_record->next = current_record;
                 two_record->prev = current_record->prev;
                 current_record->next = NULL;
                 current_record->prev = two_record;
+                one_record->next = two_record; //new
                 last = current_record;
             }
                 // 3rd case
@@ -430,22 +448,27 @@ void DronesManagerSorted::sort_asc() {
             else if (current_record == first && current_record->next->next){
                 //current_record is [2]
                 DroneRecord* one_record = current_record->next;
+                DroneRecord* three_record = one_record->next;
                 current_record->next = one_record->next;
                 current_record->prev = one_record;
                 one_record->next = current_record;
                 one_record->prev = NULL;
+                three_record->prev = current_record; //new
                 first = one_record;
             }
                 // 4th case
                 // No last no first:     [1] - [3] - [2] - [4]   -->   [1] - [2] - [3] - [4]
             else if (current_record != first && current_record->next->next){
                 //current_record is [3]
+                DroneRecord* one_record = current_record->prev;
                 DroneRecord* two_record = current_record->next;
                 DroneRecord* four_record = current_record->next->next;
                 two_record->next = current_record;
                 two_record->prev = current_record->prev;
                 current_record->next = four_record;
                 current_record->prev = two_record;
+                one_record->next = two_record; //new
+                four_record->prev = current_record; //new
             }
             //Resetting the iterators
             count = 0;
@@ -460,7 +483,7 @@ void DronesManagerSorted::sort_asc() {
 void DronesManagerSorted::sort_desc() {
     DroneRecord* current_record = first;
     int count = 0;
-    while(count != size){
+    while(count != size-1){
         if(current_record->droneID < current_record->next->droneID){
             //Cases
             // 1. Both last and first:  [1] - [2]                   -->     [2] - [1]
@@ -483,11 +506,13 @@ void DronesManagerSorted::sort_desc() {
                 // Only last: [3] - [1] - [2]    -->     [3] - [2] - [1]
             else if (current_record != first && !current_record->next->next){
                 //current_record is [1]
+                DroneRecord* three_record = current_record->prev;
                 DroneRecord* two_record = current_record->next;
                 two_record->next = current_record;
                 two_record->prev = current_record->prev;
                 current_record->next = NULL;
                 current_record->prev = two_record;
+                three_record->next = two_record; //new
                 last = current_record;
             }
                 // 3rd case
@@ -495,22 +520,27 @@ void DronesManagerSorted::sort_desc() {
             else if (current_record == first && current_record->next->next){
                 //current_record is [2]
                 DroneRecord* three_record = current_record->next;
+                DroneRecord* one_record = three_record->next;
                 current_record->next = three_record->next;
                 current_record->prev = three_record;
                 three_record->next = current_record;
                 three_record->prev = NULL;
+                one_record->prev = current_record; //new
                 first = three_record;
             }
                 // 4th case
                 // No last no first:     [4] - [2] - [3] - [1]      -->     [4] - [3] - [2] - [1]
             else if (current_record != first && current_record->next->next){
                 //current_record is [2]
+                DroneRecord* four_record = current_record->prev;
                 DroneRecord* three_record = current_record->next;
                 DroneRecord* one_record = current_record->next->next;
                 three_record->next = current_record;
                 three_record->prev = current_record->prev;
                 current_record->next = one_record;
                 current_record->prev = three_record;
+                four_record->next = three_record;
+                one_record->prev = current_record;
             }
             //Resetting the iterators
             count = 0;

@@ -38,9 +38,9 @@ int main() {
     test_results[6] = drones_manager_test.test7();
     test_results[7] = drones_manager_test.test8();
     test_results[8] = drones_manager_test.test9();
-    test_results[9] = drones_manager_test.test10(); // ERROR Here
-//    test_results[10] = drones_manager_test.test11();
-//    test_results[11] = drones_manager_test.test12();
+    test_results[9] = drones_manager_test.test10();
+    test_results[10] = drones_manager_test.test11();
+    test_results[11] = drones_manager_test.test12();
 
     cout << "DRONES MANAGER TEST RESULTS \n";
     cout << "*************************** \n";
