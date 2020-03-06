@@ -8,7 +8,11 @@ DronesManager::DronesManager() {
 	size = 0;
 }
 DronesManager::~DronesManager() {
-
+    for (int i = 0; i < size; ++i) {
+        remove_back();
+    }
+    first = NULL;
+    last = NULL;
 }
 bool operator==(const DronesManager::DroneRecord& lhs, const DronesManager::DroneRecord& rhs) {
 	bool are_equal = true;
